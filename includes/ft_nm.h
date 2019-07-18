@@ -6,7 +6,7 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 21:58:29 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/18 18:08:43 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/19 01:22:55 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "ft_printf.h"
 
 /*
 ** --------------------------------- DEFINES ---------------------------------
@@ -42,7 +43,9 @@
 
 void	    handle_64(void *ptr);
 
-void	    ft_fputstr(int fd, char *s);
-void        ft_putstr(char *s);
+void		ft_nlist_mergesort(struct nlist_64 **array, int left, int right, char *strtable);
+
+int		    ft_strcmp(const char *s1, const char *s2);
+void	    *ft_memcpy(void *dst, const void *src, size_t n);
 
 #endif
