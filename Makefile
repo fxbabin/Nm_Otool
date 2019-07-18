@@ -3,19 +3,19 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: fbabin <marvin@42.fr>                      +#+  +:+       +#+         #
+#    By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/17 21:49:09 by fbabin            #+#    #+#              #
-#    Updated: 2019/07/17 22:33:12 by fbabin           ###   ########.fr        #
+#    Updated: 2019/07/18 18:04:48 by fbabin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME			=	ft_nm
 
 CC				=	gcc
-CFLAGS			=	-Wall -Werror -Wextra #-Weverything
+CFLAGS			=	-Wall -Werror -Wextra -Weverything
 
-_SRCS			=	ft_nm.c
+_SRCS			=	ft_nm.c utils.c handler_64.c
 
 SRCS_DIR		=	srcs
 SRCS			=	$(addprefix $(SRCS_DIR)/,$(_SRCS))

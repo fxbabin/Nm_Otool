@@ -1,107 +1,86 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_nm.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 18:01:35 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/17 23:28:56 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/18 19:01:04 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_nm.h"
 #include <stdio.h>
-#include <sys/mman.h>
-#include <mach-o/loader.h>
-#include <mach-o/nlist.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <stdlib.h>
 
-void	print_output(int nsyms, int symoff, int stroff, char *ptr)
-{
-	int					i;
-	char				*stringtable;
-	struct nlist_64		*array;
-
-	array = (void*)ptr + symoff;
-	stringtable = (void*)ptr + stroff;
-
-
-	for (i=0; i < nsyms; i++)
-	{
-		printf("%s\n", stringtable + array[i].n_un.n_strx);
-	}
-}
-
-void	handle_64(char *ptr)
-{
-	int							ncmds;
-	int							i;
-	struct mach_header_64		*header;
-	struct load_command			*lc;
-	struct symtab_command		*sym;
-
-	header = (struct mach_header_64*)ptr;
-	ncmds = header->ncmds;
-	lc = (void*)ptr + sizeof(*header);
-	for (i = 0; i < ncmds; ++i)
-	{
-		if (lc->cmd == LC_SYMTAB)
-		{
-			puts("c'est le bon");
-			sym = (struct symtab_command*)lc;
-			printf("nb symbols %d\n", sym->nsyms);
-			print_output(sym->nsyms, sym->symoff, sym->stroff, ptr);
-			break ;
-		}
-		lc = (void*) lc + lc->cmdsize;
-	}
-}
-
-void	nm(char *ptr)
+static void		nm(void *ptr)
 {
 	int		magic_number;
 
 	magic_number = *(int*)ptr;
 	if (magic_number == (int)MH_MAGIC_64)
 	{
-		printf("Je suis un binaire 64 bits\n");
+		ft_putstr("File is a 64 bits file\n");
 		handle_64(ptr);
 	}
 }
 
-int		main(int argc, char **argv)
+static int		open_file(int argc, char **argv)
 {
 	int		fd;
-	char	*ptr;
-	struct stat buf;
 
+	fd = -1;
 	if (argc != 2)
 	{
-		fprintf(stderr, "Please give me an arg\n");
-		return (EXIT_FAILURE);
+		ft_fputstr(2, "Error :: file needed\n");
+		return (-1);
 	}
 	if ((fd = open(argv[1], O_RDONLY)) < 0)
 	{
-		perror("open");
+		ft_fputstr(2, "Error :: file open failed\n");
+		return (-1);
+	}
+	return (fd);
+}
+
+static int		nm_runner(int fd, struct stat *buf, void *ptr)
+{
+	if (fstat(fd, buf) < 0)
+	{
+		ft_fputstr(2, "Error :: fstat failed\n");
 		return (EXIT_FAILURE);
 	}
-	if (fstat(fd, &buf) < 0)
+	if ((ptr = mmap(0, ((size_t)(*buf).st_size), PROT_READ,
+		MAP_PRIVATE, fd, 0)) == MAP_FAILED)
 	{
-		perror("fstat");
+		ft_fputstr(2, "Error :: mmap failed\n");
+		printf("%p\n", ptr);
 		return (EXIT_FAILURE);
 	}
-	if ((ptr = mmap(0, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0)) == MAP_FAILED)
+	if ((close(fd)) < 0)
 	{
-		perror("mmap");
+		ft_fputstr(2, "Error :: close failed\n");
 		return (EXIT_FAILURE);
 	}
 	nm(ptr);
-	if (munmap(ptr, buf.st_size) < 0)
+	if (munmap(ptr, (size_t)((*buf).st_size)) < 0)
 	{
-		perror("munmap");
-		return (EXIT_FAILURE);
+		ft_fputstr(2, "error :: close/munmap failed\n");
+		return (-1);
 	}
+	return (0);
+}
+
+int		main(int argc, char **argv)
+{
+	struct stat buf;
+	void		*ptr;
+	int			fd;
+
+	ptr = NULL;
+	if ((fd = open_file(argc, argv)) == -1)
+		return (EXIT_FAILURE);	
+	if ((nm_runner(fd, &buf, ptr)) == -1)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
