@@ -6,7 +6,7 @@
 #    By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/17 21:49:09 by fbabin            #+#    #+#              #
-#    Updated: 2019/07/18 18:04:48 by fbabin           ###   ########.fr        #
+#    Updated: 2019/07/18 22:08:22 by fbabin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,14 +23,19 @@ SRCS			=	$(addprefix $(SRCS_DIR)/,$(_SRCS))
 OBJS_DIR		=	objs
 OBJS			=	$(addprefix $(OBJS_DIR)/,$(_SRCS:%.c=%.o))
 
-INCS_DIR		=	includes
-INCS			=	-I $(INCS_DIR)
-HEADER			=	$(INCS_DIR)/ft_nm.h
+PRINTF_DIR		=	ft_printf
+_PRINTF			=	libftprintf.a
+PRINTF			=	$(PRINTF_DIR)/$(_PRINTF) 
 
-all: $(HEADER) $(NAME)
+INCS_DIR		=	includes
+INCS			=	-I $(INCS_DIR) -I $(PRINTF_DIR)/$(INCS_DIR)
+HEADER			=	$(INCS_DIR)/ft_nm.h $(PRINTF_DIR)/$(INCS_DIR)/ft_printf.h 
+
+
+all: lib $(HEADER) $(NAME)
 
 $(NAME): $(OBJS_DIR) $(OBJS)
-	@$(CC) $(CFLAGS) $(INCS) -o $(NAME) $(OBJS)
+	@$(CC) $(CFLAGS) $(INCS) -o $(NAME) -L$(PRINTF_DIR) -lftprintf $(OBJS)
 	@echo "$(NAME) : Done"
 
 $(OBJS_DIR):
@@ -39,7 +44,11 @@ $(OBJS_DIR):
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c $(HEADER)
 	@$(CC) $(CFLAGS) $(INCS) -c -o $@ $<
 
+lib:
+	@make -C $(PRINTF_DIR)
+
 clean:
+	@make fclean -C $(PRINTF_DIR)
 	@/bin/rm -rf $(OBJS_DIR)
 	@echo "$(NAME) clean : Done"
 
