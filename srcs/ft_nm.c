@@ -6,22 +6,34 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 18:01:35 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/18 22:32:23 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/21 20:36:57 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 //#include <stdio.h>
 
-static void		nm(void *ptr)
+char			*stringtable = NULL;
+
+static void		nm(t_env *env)
 {
 	int		magic_number;
 
-	magic_number = *(int*)ptr;
+	magic_number = *(int*)(env->ptr);
+	//ft_printf("magic number : %d\n", magic_number);
 	if (magic_number == (int)MH_MAGIC_64)
 	{
-		ft_printf("File is a 64 bits file\n");
-		handle_64(ptr);
+		//ft_printf("64 bits\n");
+		handle_64(env);
+	}
+	else if (magic_number == (int)MH_MAGIC)
+	{
+		ft_printf("32 bits\n");
+		//handle_64(ptr);
+	}
+	else if (magic_number == (int)FAT_CIGAM)
+	{
+		ft_printf("fat file\n");
 	}
 }
 
@@ -43,14 +55,15 @@ static int		open_file(int argc, char **argv)
 	return (fd);
 }
 
-static int		nm_runner(int fd, struct stat *buf, void *ptr)
+static int		nm_runner(t_env *env, int fd, struct stat *buf)
 {
 	if (fstat(fd, buf) < 0)
 	{
 		ft_dprintf(2, "Error :: fstat failed\n");
 		return (EXIT_FAILURE);
 	}
-	if ((ptr = mmap(0, ((size_t)(*buf).st_size), PROT_READ,
+	env->file_size = ((size_t)(*buf).st_size);
+	if ((env->ptr = mmap(0, ((size_t)(*buf).st_size), PROT_READ,
 		MAP_PRIVATE, fd, 0)) == MAP_FAILED)
 	{
 		ft_dprintf(2, "Error :: mmap failed\n");
@@ -61,8 +74,8 @@ static int		nm_runner(int fd, struct stat *buf, void *ptr)
 		ft_dprintf(2, "Error :: close failed\n");
 		return (EXIT_FAILURE);
 	}
-	nm(ptr);
-	if (munmap(ptr, (size_t)((*buf).st_size)) < 0)
+	nm(env);
+	if (munmap(env->ptr, (size_t)((*buf).st_size)) < 0)
 	{
 		ft_dprintf(2, "error :: close/munmap failed\n");
 		return (-1);
@@ -73,13 +86,20 @@ static int		nm_runner(int fd, struct stat *buf, void *ptr)
 int		main(int argc, char **argv)
 {
 	struct stat buf;
-	void		*ptr;
 	int			fd;
+	t_env		*env;
 
-	ptr = NULL;
-	if ((fd = open_file(argc, argv)) == -1)
-		return (EXIT_FAILURE);	
-	if ((nm_runner(fd, &buf, ptr)) == -1)
+	if (!(env = (t_env*)malloc(sizeof(t_env))))
 		return (EXIT_FAILURE);
+	if ((fd = open_file(argc, argv)) == -1)
+	{
+		free(env);
+		return (EXIT_FAILURE);
+	}
+	if ((nm_runner(env, fd, &buf)) == -1)
+	{
+		free(env);
+		return (EXIT_FAILURE);
+	}
 	return (EXIT_SUCCESS);
 }
