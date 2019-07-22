@@ -6,7 +6,7 @@
 #    By: arobion <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/01 15:45:46 by arobion           #+#    #+#              #
-#    Updated: 2019/07/21 20:36:00 by fbabin           ###   ########.fr        #
+#    Updated: 2019/07/22 19:08:11 by fbabin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ def launch_test(exec_cmd, f):
     for line in f.readlines():
         line = line.strip()
         out = subprocess.run([exec_cmd + " " + line], shell=True, stdout=subprocess.PIPE)
-        if out.returncode != 0 and mein_out.returncode != 1:
+        if out.returncode != 0 and out.returncode != 1:
             print("{} => {}SEGV{} ".format(line, FAIL, ENDC))
             files_segv.append(line)
             nb_segv += 1
@@ -49,7 +49,7 @@ def main():
 
     print("compilation and copying of ft_nm")
     subprocess.run(["rm -f ft_nm"], shell=True)
-    ret = subprocess.run(["cd .. ; make re ; cp ft_nm fx_tests/"], shell=True, stdout=subprocess.PIPE)
+    ret = subprocess.run(["cd .. ; make re ; cp ft_nm filetype_tests/"], shell=True, stdout=subprocess.PIPE)
     if ret.returncode != 0:
         print("\t{}compilation FAILURE {}".format(FAIL, ENDC))
         return

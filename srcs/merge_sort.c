@@ -6,11 +6,22 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 00:16:57 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/21 14:01:49 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/22 18:28:41 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
+
+static int				lexical_cmp(struct nlist_64 *a1, struct nlist_64 *a2)
+{
+	if (ft_strcmp(stringtable + a1->n_un.n_strx,
+		stringtable + a2->n_un.n_strx) == 0)
+	{
+		return (a1->n_value - a2->n_value);
+	}
+	return (ft_strcmp(stringtable + a1->n_un.n_strx,
+		stringtable + a2->n_un.n_strx));
+}
 
 static void		ft_merge(struct nlist_64 **array, struct nlist_64 **tmp,
 		int left, int right)
@@ -25,8 +36,7 @@ static void		ft_merge(struct nlist_64 **array, struct nlist_64 **tmp,
 	j = mid + 1;
 	k = 0;
 	while (i <= mid && j <= right)
-		if (ft_strcmp(stringtable + array[i]->n_un.n_strx,
-					stringtable + array[j]->n_un.n_strx) <= 0)
+		if (lexical_cmp(array[i], array[j]) <= 0)
 			tmp[k++] = array[i++];
 		else
 			tmp[k++] = array[j++];
