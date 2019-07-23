@@ -6,7 +6,7 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 21:58:29 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/22 19:06:26 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/23 14:37:06 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,9 @@ typedef struct					s_env
 	struct load_command			*lc;
 	struct symtab_command		*sym;
 	uint32_t					ncmds;
+	char						*stringtable;
 	char						*c_sects;
-	struct section_64			**sects;
 }								t_env;
-
-extern char						*stringtable;
 
 /*
 ** ----------------------------------------------------------------------------
@@ -55,12 +53,13 @@ extern char						*stringtable;
 ** ----------------------------------------------------------------------------
 */
 
-void							get_section_table(t_env *env);
+void							get_section_table64(t_env *env);
 void							handle_64(t_env *env);
-void							handle_32(t_env *env);
 
-void							ft_nl64_mergesort(struct nlist_64 **array, int left, int right);
 
+
+void							ft_quicksort(void **array, int left, int right,
+									char *stringtable);
 int								ft_strcmp(const char *s1, const char *s2);
 void							*ft_memcpy(void *dst, const void *src,
 									size_t n);

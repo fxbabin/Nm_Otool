@@ -6,30 +6,22 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 18:01:35 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/22 19:06:48 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/23 14:32:54 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
-//#include <stdio.h>
-
-char			*stringtable = NULL;
 
 static void		nm(t_env *env)
 {
 	int		magic_number;
 
 	magic_number = *(int*)(env->ptr);
-	//ft_printf("magic number : %d\n", magic_number);
 	if (magic_number == (int)MH_MAGIC_64)
-	{
-		//ft_printf("64 bits\n");
 		handle_64(env);
-	}
 	else if (magic_number == (int)MH_MAGIC)
 	{
-		//ft_printf("32 bits\n");
-		handle_32(env);
+		ft_printf("32 bits\n");
 	}
 	else if (magic_number == (int)FAT_CIGAM)
 	{
@@ -83,7 +75,7 @@ static int		nm_runner(t_env *env, int fd, struct stat *buf)
 	return (0);
 }
 
-int		main(int argc, char **argv)
+int				main(int argc, char **argv)
 {
 	struct stat buf;
 	int			fd;
