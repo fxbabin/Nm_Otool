@@ -6,7 +6,7 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 21:58:29 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/23 15:12:56 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/23 15:25:47 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,13 @@ typedef struct					s_env
 ** ----------------------------------------------------------------------------
 */
 
-void							get_section_table64(t_env *env,
-									struct mach_header_64 *header);
 void							handle_64(t_env *env);
 void							handle_32(t_env *env);
+
+void							get_section_table64(t_env *env,
+									struct mach_header_64 *header);
+void							get_section_table32(t_env *env,
+									struct mach_header *header);
 
 void							ft_quicksort(void **array, int left, int right,
 									char *stringtable);

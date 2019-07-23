@@ -6,7 +6,7 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 18:01:35 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/23 15:13:38 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/23 15:18:55 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void		nm(t_env *env)
 	if (magic_number == (int)MH_MAGIC_64)
 		handle_64(env);
 	else if (magic_number == (int)MH_MAGIC)
-		ft_printf("32 file\n");
+		handle_32(env);
 	else if (magic_number == (int)FAT_CIGAM)
 	{
 		ft_printf("fat file\n");
