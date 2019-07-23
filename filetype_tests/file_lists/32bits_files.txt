@@ -9,3 +9,5 @@
 /usr/bin/vmmap32
 /usr/sbin/pictd
 /sbin/autodiskmount
+/usr/lib/libnetsnmp.5.2.1.dylib
+/usr/lib/libnetsnmp.5.dylib
