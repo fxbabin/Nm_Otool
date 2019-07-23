@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handler_64.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/18 17:55:21 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/23 14:38:06 by fbabin           ###   ########.fr       */
+/*   Created: 2019/07/23 15:05:01 by fbabin            #+#    #+#             */
+/*   Updated: 2019/07/23 15:13:14 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,14 @@ static void			display_64(t_env *env)
 
 void				handle_64(t_env *env)
 {
+	struct mach_header_64		*header;
 	uint32_t					i;
 
 	i = 0;
-	env->header = (struct mach_header_64*)(env->ptr);
-	env->ncmds = env->header->ncmds;
-	env->lc = (struct load_command*)((size_t)env->ptr + sizeof(*(env->header)));
-	get_section_table64(env);
+	header = (struct mach_header_64*)(env->ptr);
+	env->ncmds = header->ncmds;
+	env->lc = (struct load_command*)((size_t)env->ptr + sizeof(*(header)));
+	get_section_table64(env, header);
 	while (i < env->ncmds)
 	{
 		if (env->lc->cmd == LC_SYMTAB)
