@@ -6,7 +6,7 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 21:58:29 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/23 15:25:47 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/25 22:16:44 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,13 @@
 #include <mach-o/loader.h>
 #include <mach-o/nlist.h>
 #include <mach-o/fat.h>
+#include <mach/machine.h>
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <ar.h>
 #include "ft_printf.h"
 
 /*
@@ -37,6 +39,7 @@
 
 typedef struct					s_env
 {
+	char						*filename;
 	void						*ptr;
 	size_t						file_size;
 	struct load_command			*lc;
@@ -52,18 +55,31 @@ typedef struct					s_env
 ** ----------------------------------------------------------------------------
 */
 
-void							handle_64(t_env *env);
-void							handle_32(t_env *env);
+int								nm(t_env *env);
 
-void							get_section_table64(t_env *env,
+int								handle_64(t_env *env);
+int								handle_32(t_env *env);
+int								handle_fat(t_env *env);
+int								handle_ppc(t_env *env);
+int								handle_ar(t_env *env);
+
+int								get_section_table_64(t_env *env,
 									struct mach_header_64 *header);
-void							get_section_table32(t_env *env,
+int								get_section_table_32(t_env *env,
+									struct mach_header *header);
+int								get_section_table_ppc(t_env *env,
 									struct mach_header *header);
 
 void							ft_quicksort(void **array, int left, int right,
 									char *stringtable);
+
+
+
+int								ft_strncmp(const char *s1, const char *s2, size_t n);
 int								ft_strcmp(const char *s1, const char *s2);
 void							*ft_memcpy(void *dst, const void *src,
 									size_t n);
+uint32_t						swap_uint32(uint32_t val);
+int								err_msg(int ret, char *filename, char *msg);
 
 #endif

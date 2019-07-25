@@ -1,7 +1,7 @@
 import subprocess
 import argparse
 
-file_type ="fat file"
+file_type ="ppc cpu"
 dirs = ["/bin/", "/usr/bin/", "/usr/sbin/", "/sbin/", "/usr/local/bin/", "/usr/lib/", "/usr/libexec/", "/usr/local/lib/"]
 
 for di in dirs:

@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:21:55 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/23 15:35:52 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/25 20:55:51 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,15 @@ static void			print_32(t_env *env, struct nlist **arr)
 	{
 		if ((arr[i]->n_type & N_STAB) != 0)
 			continue ;
-		if (arr[i]->n_sect == 0)
+		if ((arr[i]->n_type & N_TYPE) == N_UNDF)
 			ft_printf("%8c %c %s\n", ' ', (arr[i]->n_type & N_EXT) ? 'U' : 'u',
 				env->stringtable + arr[i]->n_un.n_strx);
 		else
 		{
-			if (arr[i]->n_type == 3)
+			if ((arr[i]->n_type & N_TYPE) == N_ABS)
 				c = (arr[i]->n_type & N_EXT) ? 'A' : 'a';
+			else if ((arr[i]->n_type & N_TYPE) == N_INDR)
+				c = (arr[i]->n_type & N_EXT) ? 'I' : 'i';
 			else
 			{
 				c = env->c_sects[arr[i]->n_sect - 1];
@@ -42,7 +44,7 @@ static void			print_32(t_env *env, struct nlist **arr)
 	}
 }
 
-static void			display_32(t_env *env)
+static int				display_32(t_env *env)
 {
 	struct nlist		*array;
 	struct nlist		**arr;
@@ -51,7 +53,7 @@ static void			display_32(t_env *env)
 	array = (struct nlist*)((size_t)env->ptr + env->sym->symoff);
 	if (!(arr = (struct nlist**)malloc(
 		(env->sym->nsyms + 1) * sizeof(struct nlist_64*))))
-		return ;
+		return (err_msg(-1, env->filename, "display_32 failed"));
 	env->stringtable = (char*)((size_t)env->ptr + env->sym->stroff);
 	i = -1;
 	while (++i < env->sym->nsyms)
@@ -60,18 +62,20 @@ static void			display_32(t_env *env)
 	ft_quicksort((void**)arr, 0, env->sym->nsyms - 1, env->stringtable);
 	print_32(env, arr);
 	free(arr);
+	return (0);
 }
 
-void				handle_32(t_env *env)
+int					handle_32(t_env *env)
 {
-	struct mach_header			*header;
-	uint32_t					i;
+	struct mach_header	*header;
+	uint32_t			i;
 
 	i = 0;
 	header = (struct mach_header*)(env->ptr);
 	env->ncmds = header->ncmds;
 	env->lc = (struct load_command*)((size_t)env->ptr + sizeof(*(header)));
-	get_section_table32(env, header);
+	if ((get_section_table_32(env, header)) == -1)
+		return (err_msg(-1, env->filename, "handle_32 failed"));
 	while (i < env->ncmds)
 	{
 		if (env->lc->cmd == LC_SYMTAB)
@@ -83,4 +87,6 @@ void				handle_32(t_env *env)
 		env->lc = (struct load_command*)((size_t)env->lc + env->lc->cmdsize);
 		++i;
 	}
+	free(env->c_sects);
+	return (0);
 }

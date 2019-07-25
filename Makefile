@@ -6,18 +6,21 @@
 #    By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/17 21:49:09 by fbabin            #+#    #+#              #
-#    Updated: 2019/07/23 15:31:07 by fbabin           ###   ########.fr        #
+#    Updated: 2019/07/25 22:16:06 by fbabin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME			=	ft_nm
 
 CC				=	gcc
-CFLAGS			=	-Wall -Werror -Wextra #-Weverything
+CFLAGS			=	-Wall -Werror -Wextra #-g3 -fsanitize=address#-Weverything
 
 _SRCS			=	ft_nm.c utils.c quicksort.c \
-					handler_64.c  get_section_table64.c \
-					handler_32.c  get_section_table32.c
+					handler_64.c get_section_table_64.c \
+					handler_32.c get_section_table_32.c \
+					handler_fat.c get_section_table_fat.c \
+					handler_ppc.c get_section_table_ppc.c \
+					handler_ar.c
 
 SRCS_DIR		=	srcs
 SRCS			=	$(addprefix $(SRCS_DIR)/,$(_SRCS))
