@@ -1,7 +1,7 @@
 import subprocess
 import argparse
 
-file_type ="ppc cpu"
+file_type ="ar file"
 dirs = ["/bin/", "/usr/bin/", "/usr/sbin/", "/sbin/", "/usr/local/bin/", "/usr/lib/", "/usr/libexec/", "/usr/local/lib/"]
 
 for di in dirs:
@@ -11,5 +11,5 @@ for di in dirs:
             continue
         ff = di + f
         out = subprocess.run(["./ft_nm", ff], capture_output=True).stdout.decode("utf-8").split("\n")
-        if out[0] == file_type:
+        if out[0].split('\n')[0] == file_type:
             print(ff)

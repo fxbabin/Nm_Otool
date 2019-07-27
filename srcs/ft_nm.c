@@ -6,7 +6,7 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 18:01:35 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/25 22:03:46 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/27 18:29:13 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int			nm(t_env *env)
 	else if (magic_number == (int)MH_CIGAM)
 		ret = handle_ppc(env);
 	else if (ft_strncmp((char*)env->ptr, ARMAG, SARMAG) == 0)
-		ft_printf("archive found\n");
+		ret = handle_ar(env);
 	else
 	{
 		ft_printf("%s\n", (char*)env->ptr);
