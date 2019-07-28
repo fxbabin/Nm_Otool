@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 18:04:42 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/25 19:07:34 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/28 20:05:11 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ int					handle_fat(t_env *env)
 		if (swap_uint32(fat->cputype) == CPU_TYPE_X86_64)
 		{
 			i = -1;
+			env->arch_size = swap_uint32(fat->size);
+			//ft_printf("%d\n", env->arch_size);
 			break ;
 		}
 		fat = (struct fat_arch*)((size_t)fat + sizeof(struct fat_arch));
@@ -46,6 +48,8 @@ int					handle_fat(t_env *env)
 		{
 			if (swap_uint32(fat->cputype) == CPU_TYPE_I386)
 			{
+				env->arch_size = swap_uint32(fat->size);
+				//ft_printf("%d\n", env->arch_size);
 				if (swap_uint32(header->nfat_arch) > 1)
 					ft_printf("\n%s (for architecture i386):\n", env->filename);
 				else
@@ -55,6 +59,8 @@ int					handle_fat(t_env *env)
 			}
 			else if (swap_uint32(fat->cputype) == CPU_TYPE_POWERPC)
 			{
+				env->arch_size = swap_uint32(fat->size);
+				//ft_printf("%d\n", env->arch_size);
 				if (swap_uint32(header->nfat_arch) > 1)
 					ft_printf("\n%s (for architecture ppc):\n", env->filename);
 				else
@@ -66,6 +72,5 @@ int					handle_fat(t_env *env)
 			i++;
 		}
 	}
-	
 	return (0);
 }

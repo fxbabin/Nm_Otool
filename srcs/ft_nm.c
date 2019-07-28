@@ -6,7 +6,7 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 18:01:35 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/27 18:29:13 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/28 20:22:13 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,11 @@ int			nm(t_env *env)
 	else if (magic_number == (int)MH_CIGAM)
 		ret = handle_ppc(env);
 	else if (ft_strncmp((char*)env->ptr, ARMAG, SARMAG) == 0)
+	{
+		if (env->arch_size == 0)
+			env->arch_size = env->file_size;
 		ret = handle_ar(env);
+	}
 	else
 	{
 		ft_printf("%s\n", (char*)env->ptr);
@@ -52,11 +56,13 @@ int		process_file(t_env *env, char *filename)
 	if ((env->ptr = mmap(0, ((size_t)(buf).st_size), PROT_READ,
 		MAP_PRIVATE, fd, 0)) == MAP_FAILED)
 		return (err_msg(EXIT_FAILURE, filename, "mmap failed"));
+	env->start = env->ptr;
+	env->arch_size = 0;
 	if ((close(fd)) < 0)
 		return (err_msg(EXIT_FAILURE, filename, "close failed"));
 	if (nm(env) == -1)
 		return (err_msg(EXIT_FAILURE, filename, "nm failed"));
-	if (munmap(env->ptr, (size_t)((buf).st_size)) < 0)
+	if (munmap(env->start, (size_t)((buf).st_size)) < 0)
 		return (err_msg(EXIT_FAILURE, filename, "munmap failed"));
 	return (0);
 }

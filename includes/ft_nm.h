@@ -6,7 +6,7 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 21:58:29 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/26 21:44:09 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/28 20:01:21 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,9 @@ typedef struct					s_env
 {
 	char						*filename;
 	void						*ptr;
+	void						*start;
 	size_t						file_size;
+	size_t						arch_size;
 	struct load_command			*lc;
 	struct symtab_command		*sym;
 	uint32_t					ncmds;
