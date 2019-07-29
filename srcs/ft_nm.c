@@ -6,7 +6,7 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 18:01:35 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/29 16:55:35 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/29 19:31:17 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@ int			nm(t_env *env)
 	return (ret);
 }
 
-int		process_file(t_env *env, char *filename)
+int			process_file(t_env *env, char *filename)
 {
-	struct	stat buf;
-	int		fd;
+	struct stat		buf;
+	int				fd;
 
 	env->filename = filename;
 	if ((fd = open(filename, O_RDONLY)) < 0)
@@ -62,7 +62,6 @@ int		process_file(t_env *env, char *filename)
 	return (0);
 }
 
-
 int			process_files(t_env *env, int argc, char **argv)
 {
 	int		i;
@@ -82,13 +81,12 @@ int			process_files(t_env *env, int argc, char **argv)
 			ft_printf("\n%s:\n", argv[i]);
 			if (process_file(env, argv[i]) == -1)
 				return (err_msg(-1, argv[i], "process file failed"));
-
 		}
 	}
 	return (0);
 }
 
-int				main(int argc, char **argv)
+int			main(int argc, char **argv)
 {
 	t_env		*env;
 

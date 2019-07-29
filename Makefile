@@ -6,7 +6,7 @@
 #    By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/17 21:49:09 by fbabin            #+#    #+#              #
-#    Updated: 2019/07/29 18:36:59 by fbabin           ###   ########.fr        #
+#    Updated: 2019/07/29 19:55:01 by fbabin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ CFLAGS			=	-Wall -Werror -Wextra #-g3 -fsanitize=address#-Weverything
 _SRCS			=	ft_nm.c utils.c quicksort.c \
 					handler_64.c get_section_table_64.c \
 					handler_32.c get_section_table_32.c \
-					handler_fat.c get_section_table_fat.c \
+					handler_fat.c \
 					handler_ppc.c get_section_table_ppc.c \
 					handler_ar.c
 
