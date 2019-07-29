@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:21:55 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/25 20:55:51 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/28 23:15:17 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,20 @@ static int				display_32(t_env *env)
 	struct nlist		**arr;
 	uint32_t			i;
 
-	array = (struct nlist*)((size_t)env->ptr + env->sym->symoff);
+	if (!(array = (struct nlist*)move_ptr(env, env->ptr, env->sym->symoff)))
+		return (-1);
 	if (!(arr = (struct nlist**)malloc(
 		(env->sym->nsyms + 1) * sizeof(struct nlist_64*))))
 		return (err_msg(-1, env->filename, "display_32 failed"));
-	env->stringtable = (char*)((size_t)env->ptr + env->sym->stroff);
+	if (!(env->stringtable = (char*)move_ptr(env, env->ptr, env->sym->stroff)))
+		return (-1);
 	i = -1;
 	while (++i < env->sym->nsyms)
+	{
 		arr[i] = &array[i];
+		if (!(move_ptr(env, env->stringtable, array[i].n_un.n_strx)))
+			return (-1);
+	}
 	arr[i] = NULL;
 	ft_quicksort((void**)arr, 0, env->sym->nsyms - 1, env->stringtable);
 	print_32(env, arr);
@@ -73,7 +79,8 @@ int					handle_32(t_env *env)
 	i = 0;
 	header = (struct mach_header*)(env->ptr);
 	env->ncmds = header->ncmds;
-	env->lc = (struct load_command*)((size_t)env->ptr + sizeof(*(header)));
+	if (!(env->lc = (struct load_command*)move_ptr(env, env->ptr, sizeof(*(header)))))
+		return (-1);
 	if ((get_section_table_32(env, header)) == -1)
 		return (err_msg(-1, env->filename, "handle_32 failed"));
 	while (i < env->ncmds)
@@ -81,10 +88,12 @@ int					handle_32(t_env *env)
 		if (env->lc->cmd == LC_SYMTAB)
 		{
 			env->sym = (struct symtab_command*)env->lc;
-			display_32(env);
+			if (display_32(env) == -1)
+				return (-1);
 			break ;
 		}
-		env->lc = (struct load_command*)((size_t)env->lc + env->lc->cmdsize);
+		if (!(env->lc = (struct load_command*)move_ptr(env, env->lc, env->lc->cmdsize)))
+			return (-1);
 		++i;
 	}
 	free(env->c_sects);

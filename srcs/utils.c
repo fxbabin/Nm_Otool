@@ -6,11 +6,22 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 17:04:30 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/25 22:00:18 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/29 12:33:54 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
+
+void	*move_ptr(t_env *env, void *ptr, size_t add)
+{
+	if (((size_t)ptr + add) >= ((size_t)env->start + env->file_size))
+	{
+		ft_dprintf(2, "%kError%k :: %k%s%k : corrupted file\n",
+			LRED, RESET, EOC, env->filename , RESET);
+		return (NULL);
+	}
+	return ((void*)((size_t)ptr + add));
+}
 
 int		ft_strncmp(const char *s1, const char *s2, size_t n)
 {

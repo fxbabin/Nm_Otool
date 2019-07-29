@@ -6,7 +6,7 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 21:58:29 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/28 20:01:21 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/28 22:20:31 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ int								get_section_table_ppc(t_env *env,
 void							ft_quicksort(void **array, int left, int right,
 									char *stringtable);
 
+void							*move_ptr(t_env *env, void *ptr, size_t add);
 
 
 int								ft_strncmp(const char *s1, const char *s2, size_t n);

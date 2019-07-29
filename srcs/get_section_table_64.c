@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 17:30:54 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/25 17:39:14 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/28 22:34:38 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ static int		alloc_sect_table_64(t_env *env, struct mach_header_64 *header)
 	uint32_t					i;
 
 	i = -1;
+	(void)header;
+	(void)env;
 	nb_sects = 0;
 	while (++i < env->ncmds)
 	{
@@ -38,10 +40,12 @@ static int		alloc_sect_table_64(t_env *env, struct mach_header_64 *header)
 			tmp = ((struct segment_command_64*)env->lc);
 			nb_sects += tmp->nsects;
 		}
-		env->lc = (struct load_command*)((size_t)env->lc + env->lc->cmdsize);
+		if (!(env->lc = (struct load_command*)move_ptr(env, env->lc, env->lc->cmdsize)))
+			return (-1);
 		++i;
 	}
-	env->lc = (struct load_command*)((size_t)env->ptr + sizeof(*(header)));
+	if (!(env->lc = (struct load_command*)move_ptr(env, env->ptr, sizeof(*(header)))))
+		return (-1);
 	if (!(env->c_sects = (char*)malloc((nb_sects + 2))))
 		return (err_msg(-1, env->filename, "alloc_sect_table_64 malloc failed"));
 	return (0);
@@ -65,14 +69,17 @@ int				get_section_table_64(t_env *env, struct mach_header_64 *header)
 			&& ((struct segment_command_64*)env->lc)->nsects > 0)
 		{
 			seg = ((struct segment_command_64*)env->lc);
-			sect = (struct section_64*)((size_t)env->lc + sizeof(*(seg)));
+			if (!(sect = (struct section_64*)move_ptr(env, env->lc, sizeof(*(seg)))))
+				return (-1);
 			y = 0;
 			while (y < seg->nsects)
 				env->c_sects[idx++] = get_sectname_letter(sect[y++].sectname);
 		}
-		env->lc = (struct load_command*)((size_t)env->lc + env->lc->cmdsize);
+		if (!(env->lc = (struct load_command*)move_ptr(env, env->lc,  env->lc->cmdsize)))
+			return (-1);
 		i++;
 	}
-	env->lc = (struct load_command*)((size_t)env->ptr + sizeof(*(header)));
+	if (!(env->lc = (struct load_command*)move_ptr(env, env->ptr, sizeof(*(header)))))
+		return (-1);
 	return (0);
 }

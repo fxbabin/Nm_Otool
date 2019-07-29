@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 18:04:42 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/28 20:05:11 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/28 23:28:23 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ int					handle_fat(t_env *env)
 
 	i = 0;
 	header = (struct fat_header*)(env->ptr);
-	fat = (struct fat_arch*)((size_t)env->ptr + sizeof(*header));
+	if (!(fat = (struct fat_arch*)move_ptr(env, env->ptr, sizeof(*header))))
+		return (-1);
 	tmp = (void*)(env->ptr);
 	while (i < swap_uint32(header->nfat_arch))
 	{
@@ -32,18 +33,21 @@ int					handle_fat(t_env *env)
 			//ft_printf("%d\n", env->arch_size);
 			break ;
 		}
-		fat = (struct fat_arch*)((size_t)fat + sizeof(struct fat_arch));
+		if (!(fat = (struct fat_arch*)move_ptr(env, fat, sizeof(struct fat_arch))))
+			return (-1);
 		i++;
 	}
 	if ((int)i == -1)
 	{
-		env->ptr = (void*)((size_t)tmp + swap_uint32(fat->offset) );
+		if (!(env->ptr = (void*)move_ptr(env, tmp, swap_uint32(fat->offset) )))
+			return (-1);
 		nm(env);
 	}
 	else
 	{
 		i = 0;
-		fat = (struct fat_arch*)((size_t)env->ptr + sizeof(*header));
+		if (!(fat = (struct fat_arch*)move_ptr(env, env->ptr, sizeof(*header))))
+			return (-1);
 		while (i < swap_uint32(header->nfat_arch))
 		{
 			if (swap_uint32(fat->cputype) == CPU_TYPE_I386)
@@ -51,10 +55,11 @@ int					handle_fat(t_env *env)
 				env->arch_size = swap_uint32(fat->size);
 				//ft_printf("%d\n", env->arch_size);
 				if (swap_uint32(header->nfat_arch) > 1)
-					ft_printf("\n%s (for architecture i386):\n", env->filename);
+					ft_printf("\n%s (for architecture %s):\n", env->filename, (swap_uint32(fat->cpusubtype) == CPU_SUBTYPE_I386_ALL) ? "i386" : "");
 				else
 					ft_printf("%s:\n", env->filename);
-				env->ptr = (void*)((size_t)tmp + swap_uint32(fat->offset) );
+				if (!(env->ptr = (void*)move_ptr(env, tmp, swap_uint32(fat->offset))))
+					return (-1);
 				nm(env);
 			}
 			else if (swap_uint32(fat->cputype) == CPU_TYPE_POWERPC)
@@ -62,13 +67,15 @@ int					handle_fat(t_env *env)
 				env->arch_size = swap_uint32(fat->size);
 				//ft_printf("%d\n", env->arch_size);
 				if (swap_uint32(header->nfat_arch) > 1)
-					ft_printf("\n%s (for architecture ppc):\n", env->filename);
+					ft_printf("\n%s (for architecture %s):\n", env->filename, (swap_uint32(fat->cpusubtype) == CPU_SUBTYPE_POWERPC_ALL) ? "ppc" : "" );
 				else
 					ft_printf("%s:\n", env->filename);
-				env->ptr = (void*)((size_t)tmp + swap_uint32(fat->offset) );
+				if (!(env->ptr = (void*)((size_t)tmp + swap_uint32(fat->offset))))
+					return (-1);
 				nm(env);
 			}
-			fat = (struct fat_arch*)((size_t)fat + sizeof(struct fat_arch));
+			if (!(fat = (struct fat_arch*)((size_t)fat + sizeof(struct fat_arch))))
+				return (-1);
 			i++;
 		}
 	}

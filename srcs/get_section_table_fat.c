@@ -6,12 +6,12 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:26:55 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/23 18:13:28 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/28 23:30:21 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
-
+/*
 static char		get_sectname_letter(char *sectname)
 {
 	if (ft_strcmp(sectname, SECT_TEXT) == 0)
@@ -72,4 +72,4 @@ void			get_section_tablefat(t_env *env, struct mach_header *header)
 		i++;
 	}
 	env->lc = (struct load_command*)((size_t)env->ptr + sizeof(*(header)));
-}
+}*/

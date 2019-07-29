@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 19:33:49 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/25 17:59:33 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/28 23:58:07 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int				get_section_table_ppc(t_env *env, struct mach_header *header)
 	while (i < env->ncmds)
 	{
 		if (swap_uint32(env->lc->cmd) == LC_SEGMENT
-			&& swap_uint32(((struct segment_command*)env->lc)->nsects) > 0)
+				&& swap_uint32(((struct segment_command*)env->lc)->nsects) > 0)
 		{
 			seg = ((struct segment_command*)env->lc);
 			sect = (struct section*)((size_t)env->lc + sizeof(*(seg)));

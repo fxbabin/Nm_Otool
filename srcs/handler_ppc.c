@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 19:23:01 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/25 20:56:25 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/28 23:58:56 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ static void			print_ppc(t_env *env, struct nlist **arr)
 			continue ;
 		if ((arr[i]->n_type & N_TYPE) == N_UNDF)
 			ft_printf("%8c %c %s\n", ' ', (arr[i]->n_type & N_EXT) ? 'U' : 'u',
-				env->stringtable + swap_uint32(arr[i]->n_un.n_strx));
+					env->stringtable + swap_uint32(arr[i]->n_un.n_strx));
 		else
 		{
 			if ((arr[i]->n_type & N_TYPE) == N_ABS)
