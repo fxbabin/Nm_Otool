@@ -6,7 +6,7 @@
 #    By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/17 21:49:09 by fbabin            #+#    #+#              #
-#    Updated: 2019/07/29 21:39:22 by fbabin           ###   ########.fr        #
+#    Updated: 2019/07/29 23:02:28 by fbabin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ NAME			=	ft_nm
 CC				=	gcc
 CFLAGS			=	-Wall -Werror -Wextra #-g3 -fsanitize=address#-Weverything
 
-_SRCS			=	ft_nm.c utils.c quicksort.c \
+_SRCS			=	ft_nm.c utils.c utils2.c ft_atoi.c quicksort.c \
 					handler_64.c get_section_table_64.c \
 					handler_32.c get_section_table_32.c \
 					handler_fat.c quicksort_ppc.c \

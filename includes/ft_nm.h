@@ -6,7 +6,7 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 21:58:29 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/29 21:40:33 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/29 23:02:14 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ void							ft_quicksort_cigam(void **array, int left,
 									int right, char *stringtable);
 
 
+int								ft_atoi(const char *str);
 int								ft_strc(t_env *env, char *string);
 void							*move_ptr(t_env *env, void *ptr, size_t add);
 
