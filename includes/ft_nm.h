@@ -6,7 +6,7 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 21:58:29 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/29 23:02:14 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/29 23:50:47 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,22 @@
 ** --------------------------------- INCLUDES ---------------------------------
 */
 
-#include <mach-o/loader.h>
-#include <mach-o/nlist.h>
-#include <mach-o/fat.h>
-#include <mach-o/ranlib.h>
-#include <mach/machine.h>
-#include <ar.h>
-#include <sys/mman.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include "ft_printf.h"
+# include <mach-o/loader.h>
+# include <mach-o/nlist.h>
+# include <mach-o/fat.h>
+# include <mach-o/ranlib.h>
+# include <mach/machine.h>
+# include <ar.h>
+# include <sys/mman.h>
+# include <fcntl.h>
+# include <sys/stat.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include "ft_printf.h"
 
 /*
- ** --------------------------------- DEFINES ---------------------------------
- */
+** --------------------------------- DEFINES ---------------------------------
+*/
 
 /*
 ** ------------------------------- STRUCTURES ---------------------------------
@@ -77,7 +77,6 @@ void							ft_quicksort(void **array, int left, int right,
 									char *stringtable);
 void							ft_quicksort_cigam(void **array, int left,
 									int right, char *stringtable);
-
 
 int								ft_atoi(const char *str);
 int								ft_strc(t_env *env, char *string);
