@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:26:55 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/29 18:36:16 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/29 21:06:00 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,46 +38,61 @@ static int		alloc_sect_table_32(t_env *env, struct mach_header *header)
 			tmp = ((struct segment_command*)env->lc);
 			nb_sects += tmp->nsects;
 		}
-		if (!(env->lc = (struct load_command*)move_ptr(env, env->lc, env->lc->cmdsize)))
+		if (!(env->lc = (struct load_command*)move_ptr(env, env->lc,
+			env->lc->cmdsize)))
 			return (-1);
 		++i;
 	}
-	if (!(env->lc = (struct load_command*)move_ptr(env, env->ptr, sizeof(*(header)))))
+	if (!(env->lc = (struct load_command*)move_ptr(env, env->ptr,
+		sizeof(*(header)))))
 		return (-1);
 	if (!(env->c_sects = (char*)malloc((nb_sects + 2))))
-		return (err_msg(-1, env->filename, "alloc_sect_table_32 malloc failed"));
+		return (err_msg(-1, env->filename, "alloc_table_32 malloc failed"));
 	return (0);
 }
 
-int				get_section_table_32(t_env *env, struct mach_header *header)
+static int		process_sections(t_env *env, uint32_t i, uint32_t y)
 {
 	struct segment_command	*seg;
 	struct section			*sect;
 	uint32_t				idx;
-	uint32_t				i;
-	uint32_t				y;
 
 	i = 0;
 	idx = 0;
-	if (alloc_sect_table_32(env, header) == -1)
-		return (err_msg(-1, env->filename, "get_section_table_32 failed"));
 	while (i < env->ncmds)
 	{
 		if (env->lc->cmd == LC_SEGMENT
 			&& ((struct segment_command*)env->lc)->nsects > 0)
 		{
 			seg = ((struct segment_command*)env->lc);
-			if (!(sect = (struct section*)move_ptr(env, env->lc, sizeof(*(seg)))))
+			if (!(sect = (struct section*)move_ptr(env,
+				env->lc, sizeof(*(seg)))))
 				return (ret_free(-1, env->c_sects));
 			y = 0;
 			while (y < seg->nsects)
 				env->c_sects[idx++] = get_sectname_letter(sect[y++].sectname);
 		}
-		if (!(env->lc = (struct load_command*)move_ptr(env, env->lc, env->lc->cmdsize)))
+		if (!(env->lc = (struct load_command*)move_ptr(env,
+			env->lc, env->lc->cmdsize)))
 			return (ret_free(-1, env->c_sects));
 		i++;
 	}
-	if (!(env->lc = (struct load_command*)move_ptr(env, env->ptr, sizeof(*(header)))))
+	return (0);
+}
+
+int				get_section_table_32(t_env *env, struct mach_header *header)
+{
+	uint32_t	y;
+	uint32_t	i;
+
+	i = 0;
+	y = 0;
+	if (alloc_sect_table_32(env, header) == -1)
+		return (err_msg(-1, env->filename, "get_section_table_64 failed"));
+	if ((process_sections(env, i, y)) == -1)
+		return (-1);
+	if (!(env->lc = (struct load_command*)move_ptr(env,
+		env->ptr, sizeof(*(header)))))
 		return (ret_free(-1, env->c_sects));
 	return (0);
 }

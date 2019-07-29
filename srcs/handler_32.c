@@ -6,12 +6,27 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:21:55 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/29 17:19:20 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/29 21:24:38 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
+static void			print_defined(t_env *env, struct nlist **arr,
+						uint32_t i, char c)
+{
+	if ((arr[i]->n_type & N_TYPE) == N_ABS)
+		c = (arr[i]->n_type & N_EXT) ? 'A' : 'a';
+	else if ((arr[i]->n_type & N_TYPE) == N_INDR)
+		c = (arr[i]->n_type & N_EXT) ? 'I' : 'i';
+	else
+	{
+		c = env->c_sects[arr[i]->n_sect - 1];
+		c += (arr[i]->n_type & N_EXT) ? 0 : 32;
+	}
+	ft_printf("%08llx %c %s\n", arr[i]->n_value, c,
+		env->stringtable + arr[i]->n_un.n_strx);
+}
 
 static void			print_32(t_env *env, struct nlist **arr)
 {
@@ -25,26 +40,38 @@ static void			print_32(t_env *env, struct nlist **arr)
 		if ((arr[i]->n_type & N_STAB) != 0)
 			continue ;
 		if ((arr[i]->n_type & N_TYPE) == N_UNDF)
-			ft_printf("%8c %c %s\n", ' ', (arr[i]->n_type & N_EXT) ? 'U' : 'u',
-				env->stringtable + arr[i]->n_un.n_strx);
-		else
 		{
-			if ((arr[i]->n_type & N_TYPE) == N_ABS)
-				c = (arr[i]->n_type & N_EXT) ? 'A' : 'a';
-			else if ((arr[i]->n_type & N_TYPE) == N_INDR)
-				c = (arr[i]->n_type & N_EXT) ? 'I' : 'i';
+			if ((arr[i]->n_type & N_EXT) && arr[i]->n_value)
+				ft_printf("%08llx %c %s\n",
+					arr[i]->n_value, 'C',
+					env->stringtable + arr[i]->n_un.n_strx);
 			else
-			{
-				c = env->c_sects[arr[i]->n_sect - 1];
-				c += (arr[i]->n_type & N_EXT) ? 0 : 32;
-			}
-			ft_printf("%08llx %c %s\n", arr[i]->n_value, c,
-				env->stringtable + arr[i]->n_un.n_strx);
+				ft_printf("%8c %c %s\n", ' ',
+					(arr[i]->n_type & N_EXT) ? 'U' : 'u',
+					env->stringtable + arr[i]->n_un.n_strx);
 		}
+		else
+			print_defined(env, arr, i, c);
 	}
 }
 
-static int				display_32(t_env *env)
+static int			check_str(t_env *env, struct nlist **arr, int end)
+{
+	int			i;
+	char		*tmp;
+
+	i = 0;
+	while (i < end)
+	{
+		tmp = (char*)(env->stringtable + arr[i]->n_un.n_strx);
+		if (ft_strc(env, tmp) == -1)
+			return (-1);
+		i++;
+	}
+	return (0);
+}
+
+static int			display_32(t_env *env)
 {
 	struct nlist		*array;
 	struct nlist		**arr;
@@ -65,6 +92,8 @@ static int				display_32(t_env *env)
 			return (ret_free(-1, arr));
 	}
 	arr[i] = NULL;
+	if ((check_str(env, arr, env->sym->nsyms - 1)) == -1)
+		return (ret_free(-1, arr));
 	ft_quicksort((void**)arr, 0, env->sym->nsyms - 1, env->stringtable);
 	print_32(env, arr);
 	return (ret_free(0, arr));
@@ -73,16 +102,17 @@ static int				display_32(t_env *env)
 int					handle_32(t_env *env)
 {
 	struct mach_header	*header;
-	uint32_t			i;
+	int					i;
 
-	i = 0;
+	i = -1;
 	header = (struct mach_header*)(env->ptr);
 	env->ncmds = header->ncmds;
-	if (!(env->lc = (struct load_command*)move_ptr(env, env->ptr, sizeof(*(header)))))
+	if (!(env->lc = (struct load_command*)move_ptr(env,
+		env->ptr, sizeof(*(header)))))
 		return (-1);
 	if ((get_section_table_32(env, header)) == -1)
 		return (err_msg(-1, env->filename, "handle_32 failed"));
-	while (i < env->ncmds)
+	while (++i < (int)env->ncmds)
 	{
 		if (env->lc->cmd == LC_SYMTAB)
 		{
@@ -91,9 +121,9 @@ int					handle_32(t_env *env)
 				return (ret_free(-1, env->c_sects));
 			break ;
 		}
-		if (!(env->lc = (struct load_command*)move_ptr(env, env->lc, env->lc->cmdsize)))
+		if (!(env->lc = (struct load_command*)move_ptr(env,
+			env->lc, env->lc->cmdsize)))
 			return (ret_free(-1, env->c_sects));
-		++i;
 	}
 	return (ret_free(0, env->c_sects));
 }
