@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 19:23:01 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/29 18:28:37 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/29 20:58:44 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,21 +101,6 @@ static void			print_ppc(t_env *env, struct nlist **arr)
 					env->stringtable + swap_uint32(arr[i]->n_un.n_strx));
 		}
 	}
-}
-
-static int			ft_strc(t_env *env, char *string)
-{
-	int		ret;
-
-	ret = 0;
-	while (*string)
-	{
-		ret++;
-		if (!(move_ptr(env, string, 1)))
-			return (-1);
-		string++;
-	}
-	return (0);
 }
 
 static int			check_str(t_env *env, struct nlist **arr, int end)

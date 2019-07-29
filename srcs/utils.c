@@ -6,11 +6,26 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 17:04:30 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/29 17:00:21 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/29 20:56:28 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
+
+int			ft_strc(t_env *env, char *string)
+{
+	int		ret;
+
+	ret = 0;
+	while (*string)
+	{
+		ret++;
+		if (!(move_ptr(env, string, 1)))
+			return (-1);
+		string++;
+	}
+	return (0);
+}
 
 int		ret_free(int ret, void *ptr)
 {
