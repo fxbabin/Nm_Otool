@@ -6,7 +6,7 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 21:58:29 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/28 22:20:31 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/29 16:58:06 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void							ft_quicksort(void **array, int left, int right,
 
 void							*move_ptr(t_env *env, void *ptr, size_t add);
 
-
+int								ret_free(int ret, void *ptr);
 int								ft_strncmp(const char *s1, const char *s2, size_t n);
 int								ft_strcmp(const char *s1, const char *s2);
 void							*ft_memcpy(void *dst, const void *src,

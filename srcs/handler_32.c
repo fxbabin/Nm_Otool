@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:21:55 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/28 23:15:17 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/29 17:19:20 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,19 +56,18 @@ static int				display_32(t_env *env)
 		(env->sym->nsyms + 1) * sizeof(struct nlist_64*))))
 		return (err_msg(-1, env->filename, "display_32 failed"));
 	if (!(env->stringtable = (char*)move_ptr(env, env->ptr, env->sym->stroff)))
-		return (-1);
+		return (ret_free(-1, arr));
 	i = -1;
 	while (++i < env->sym->nsyms)
 	{
 		arr[i] = &array[i];
 		if (!(move_ptr(env, env->stringtable, array[i].n_un.n_strx)))
-			return (-1);
+			return (ret_free(-1, arr));
 	}
 	arr[i] = NULL;
 	ft_quicksort((void**)arr, 0, env->sym->nsyms - 1, env->stringtable);
 	print_32(env, arr);
-	free(arr);
-	return (0);
+	return (ret_free(0, arr));
 }
 
 int					handle_32(t_env *env)
@@ -89,13 +88,12 @@ int					handle_32(t_env *env)
 		{
 			env->sym = (struct symtab_command*)env->lc;
 			if (display_32(env) == -1)
-				return (-1);
+				return (ret_free(-1, env->c_sects));
 			break ;
 		}
 		if (!(env->lc = (struct load_command*)move_ptr(env, env->lc, env->lc->cmdsize)))
-			return (-1);
+			return (ret_free(-1, env->c_sects));
 		++i;
 	}
-	free(env->c_sects);
-	return (0);
+	return (ret_free(0, env->c_sects));
 }

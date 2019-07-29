@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 19:23:01 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/28 23:58:56 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/29 18:28:37 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,21 +103,60 @@ static void			print_ppc(t_env *env, struct nlist **arr)
 	}
 }
 
+static int			ft_strc(t_env *env, char *string)
+{
+	int		ret;
+
+	ret = 0;
+	while (*string)
+	{
+		ret++;
+		if (!(move_ptr(env, string, 1)))
+			return (-1);
+		string++;
+	}
+	return (0);
+}
+
+static int			check_str(t_env *env, struct nlist **arr, int end)
+{
+	int			i;
+	char		*tmp;
+
+	i = 0;
+	while (i < end)
+	{
+		tmp = (char*)(env->stringtable + swap_uint32(arr[i]->n_un.n_strx));
+		if (ft_strc(env, tmp) == -1)
+			return (-1);
+		i++;
+	}
+	return (0);
+}
+
 static int			display_ppc(t_env *env)
 {
 	struct nlist	*array;
 	struct nlist	**arr;
 	uint32_t		i;
 
-	array = (struct nlist*)((size_t)env->ptr + swap_uint32(env->sym->symoff));
+	if (!(array = (struct nlist*)move_ptr(env, env->ptr, swap_uint32(env->sym->symoff))))
+		return (-1);
 	if (!(arr = (struct nlist**)malloc(
 					(swap_uint32(env->sym->nsyms) + 1) * sizeof(struct nlist*))))
 		return (err_msg(-1, env->filename, "display_ppc failed"));
-	env->stringtable = (char*)((size_t)env->ptr + swap_uint32(env->sym->stroff));
+	if (!(env->stringtable = (char*)move_ptr(env, env->ptr, swap_uint32(env->sym->stroff))))
+		return (-1);
 	i = -1;
 	while (++i < swap_uint32(env->sym->nsyms))
+	{
 		arr[i] = &array[i];
+		//if (!(move_ptr(env, env->stringtable, array[i].n_un.n_strx)))
+		//	return (-1);
+	}
 	arr[i] = NULL;
+	if ((check_str(env, arr, swap_uint32(env->sym->nsyms) - 1)) == -1)
+		return (-1);
 	ft_quicksort_cigam((void**)arr, 0, swap_uint32(env->sym->nsyms) - 1, env->stringtable);
 	print_ppc(env, arr);
 	free(arr);
@@ -132,7 +171,8 @@ int					handle_ppc(t_env *env)
 	i = 0;
 	header = (struct mach_header*)(env->ptr);
 	env->ncmds = swap_uint32(header->ncmds);
-	env->lc = (struct load_command*)((size_t)env->ptr + sizeof(*(header)));
+	if(!(env->lc = (struct load_command*)move_ptr(env, env->ptr, sizeof(*(header)))))
+		return (-1);
 	if (get_section_table_ppc(env, header) == -1)
 		return (err_msg(-1, env->filename, "handle_ppc failed"));
 	while (i < env->ncmds)
@@ -141,11 +181,12 @@ int					handle_ppc(t_env *env)
 		{
 			env->sym = (struct symtab_command*)env->lc;
 			if (display_ppc(env) == -1)
-				return (err_msg(-1, env->filename, "handle_ppc failed"));
+				return (ret_free(-1, env->c_sects));
 			break ;
 		}
-		env->lc = (struct load_command*)((size_t)env->lc + swap_uint32(env->lc->cmdsize));
+		if (!(env->lc = (struct load_command*)move_ptr(env, env->lc, swap_uint32(env->lc->cmdsize))))
+			return (ret_free(-1, env->c_sects));
 		++i;
 	}
-	return (0);
+	return (ret_free(0, env->c_sects));
 }

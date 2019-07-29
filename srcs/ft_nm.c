@@ -6,7 +6,7 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 18:01:35 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/29 15:03:13 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/29 16:55:35 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int			nm(t_env *env)
 	magic_number = *(int*)(env->ptr);
 	if (magic_number == (int)MH_MAGIC_64)
 		ret = handle_64(env);
-	/*else if (magic_number == (int)MH_MAGIC)
+	else if (magic_number == (int)MH_MAGIC)
 		ret = handle_32(env);
 	else if (magic_number == (int)FAT_MAGIC || magic_number == (int)FAT_CIGAM)
 		ret = handle_fat(env);
@@ -32,7 +32,7 @@ int			nm(t_env *env)
 		if (env->arch_size == 0)
 			env->arch_size = env->file_size;
 		ret = handle_ar(env);
-	}*/
+	}
 	return (ret);
 }
 
@@ -52,11 +52,9 @@ int		process_file(t_env *env, char *filename)
 		return (err_msg(EXIT_FAILURE, filename, "mmap failed"));
 	env->start = env->ptr;
 	env->arch_size = 0;
+	env->c_sects = NULL;
 	if ((close(fd)) < 0)
 		return (err_msg(EXIT_FAILURE, filename, "close failed"));
-	//ft_printf("%p\n", (void*)());
-	//if (!(move_ptr(env, env->start, env->file_size - 1)))
-	//	return (-1);
 	if (nm(env) == -1)
 		return (err_msg(EXIT_FAILURE, filename, "nm failed"));
 	if (munmap(env->start, (size_t)((buf).st_size)) < 0)
@@ -97,7 +95,10 @@ int				main(int argc, char **argv)
 	if (!(env = (t_env*)malloc(sizeof(t_env))))
 		return (err_msg(EXIT_FAILURE, NULL, "malloc failed on env"));
 	if ((process_files(env, argc, argv)) == -1)
+	{
+		free(env);
 		return (err_msg(EXIT_FAILURE, NULL, "process files failed"));
+	}
 	free(env);
 	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 17:30:54 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/28 22:34:38 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/29 17:24:09 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,16 +70,16 @@ int				get_section_table_64(t_env *env, struct mach_header_64 *header)
 		{
 			seg = ((struct segment_command_64*)env->lc);
 			if (!(sect = (struct section_64*)move_ptr(env, env->lc, sizeof(*(seg)))))
-				return (-1);
+				return (ret_free(-1, env->c_sects));
 			y = 0;
 			while (y < seg->nsects)
 				env->c_sects[idx++] = get_sectname_letter(sect[y++].sectname);
 		}
 		if (!(env->lc = (struct load_command*)move_ptr(env, env->lc,  env->lc->cmdsize)))
-			return (-1);
+			return (ret_free(-1, env->c_sects));
 		i++;
 	}
 	if (!(env->lc = (struct load_command*)move_ptr(env, env->ptr, sizeof(*(header)))))
-		return (-1);
+		return (ret_free(-1, env->c_sects));
 	return (0);
 }

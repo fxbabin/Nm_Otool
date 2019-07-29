@@ -6,11 +6,18 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 17:04:30 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/29 12:33:54 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/29 17:00:21 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
+
+int		ret_free(int ret, void *ptr)
+{
+	if (ptr)
+		free(ptr);
+	return (ret);
+}
 
 void	*move_ptr(t_env *env, void *ptr, size_t add)
 {

@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:05:01 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/29 15:04:25 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/29 17:15:14 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,39 +48,7 @@ static void			print_64(t_env *env, struct nlist_64 **arr)
 	}
 }
 
-int		che(t_env *env, struct nlist_64 **arr, int begin, int last)
-{
-	int		i;
-
-	i = begin - 1;
-	while (++i <= last)
-	{
-		if (!(move_ptr(env, env->stringtable,  arr[i]->n_un.n_strx)))
-			return (-1);
-	}
-	return (0);
-}
-
-int			check_ss(t_env *env, char *str, size_t offset)
-{
-	char	*tmp;
-	int		i;
-
-	i = -1;
-	if (!(tmp = (char*)move_ptr(env, str, offset)))
-		return (-1);
-	//ft_printf("%p || %p\n", (void*)((size_t)env->start + env->file_size), str);
-	while (++i > -1)
-	{
-		if (!(move_ptr(env, tmp, i)))
-			return (-1);
-		if (!tmp || !tmp[i])
-			break ;
-	}
-	return (0);
-}
-
-int			ft_strc(t_env *env, char *string)
+static int			ft_strc(t_env *env, char *string)
 {
 	int		ret;
 
@@ -95,7 +63,7 @@ int			ft_strc(t_env *env, char *string)
 	return (0);
 }
 
-int			check_str(t_env *env, struct nlist_64 **arr, int end)
+static int			check_str(t_env *env, struct nlist_64 **arr, int end)
 {
 	int			i;
 	char		*tmp;
@@ -103,14 +71,9 @@ int			check_str(t_env *env, struct nlist_64 **arr, int end)
 	i = 0;
 	while (i < end)
 	{
-		//ft_printf("%d\n", i);
-		//ft_printf("%p || %p\n",(void*)((size_t)env->start + env->file_size),  (void*)(&(arr[i]->n_un.n_strx)));
 		tmp = (char*)(env->stringtable + arr[i]->n_un.n_strx);
-		//	return (-1);
 		if (ft_strc(env, tmp) == -1)
-		{
 			return (-1);
-		}
 		i++;
 	}
 	return (0);
@@ -128,7 +91,7 @@ static int			display_64(t_env *env)
 					(env->sym->nsyms + 1) * sizeof(struct nlist_64*))))
 		return (err_msg(-1, env->filename, "display_64 malloc failed"));
 	if (!(env->stringtable = (char*)move_ptr(env, env->ptr, env->sym->stroff)))
-		return (-1);
+		return (ret_free(-1, arr));
 	//ft_printf("%d\n", *((int*)env->stringtable));
 	i = -1;
 	//int		las;
@@ -138,7 +101,7 @@ static int			display_64(t_env *env)
 	{
 		arr[i] = &array[i];
 		if (!(move_ptr(env, env->stringtable, array[i].n_un.n_strx)))
-			return (-1);
+			return (ret_free(-1, arr));
 		//las = ft_strlenp((char*)(env->stringtable + array[i].n_un.n_strx));
 	}
 	//if (check_ss(env,env->stringtable, array[i].n_un.n_strx) == -1)
@@ -146,7 +109,7 @@ static int			display_64(t_env *env)
 	//ft_printf("%d || %d\n", i, env->sym->nsyms - 1);
 	//arr[i] = NULL;
 	if ((check_str(env, arr, env->sym->nsyms - 1)) == -1)
-		return (-1);
+		return (ret_free(-1, arr));
 	//if (*((char*)((size_t)env->ptr + env->file_size - 1)) == '\n')
 	//	return (-1);
 	//ft_printf("%p || %p\n", (void*)((size_t)env->ptr + env->file_size) , env->stringtable + array[i].n_un.n_strx);
@@ -155,8 +118,7 @@ static int			display_64(t_env *env)
 
 	ft_quicksort((void**)arr, 0, env->sym->nsyms - 1, env->stringtable);
 	print_64(env, arr);
-	free(arr);
-	return (0);
+	return (ret_free(0, arr));
 }
 
 int					handle_64(t_env *env)
@@ -177,13 +139,12 @@ int					handle_64(t_env *env)
 		{
 			env->sym = (struct symtab_command*)env->lc;
 			if ((display_64(env)) == -1)
-				return (-1);
+				return (ret_free(-1, env->c_sects));
 			break ;
 		}
 		if (!(env->lc = (struct load_command*)move_ptr(env, env->lc, env->lc->cmdsize)))
-			return (-1);
+			return (ret_free(-1, env->c_sects));
 		++i;
 	}
-	free(env->c_sects);
-	return (0);
+	return (ret_free(0, env->c_sects));
 }

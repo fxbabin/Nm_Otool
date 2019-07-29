@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 19:33:49 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/28 23:58:07 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/29 18:32:36 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,12 @@ static int		alloc_sect_table_ppc(t_env *env, struct mach_header *header)
 			tmp = ((struct segment_command*)env->lc);
 			nb_sects += swap_uint32(tmp->nsects);
 		}
-		env->lc = (struct load_command*)((size_t)env->lc + swap_uint32(env->lc->cmdsize));
+		if (!(env->lc = (struct load_command*)move_ptr(env, env->lc, swap_uint32(env->lc->cmdsize))))
+			return (-1);
 		++i;
 	}
-	env->lc = (struct load_command*)((size_t)env->ptr + sizeof(*(header)));
+	if (!(env->lc = (struct load_command*)move_ptr(env, env->ptr, sizeof(*(header)))))
+		return (-1);
 	if (!(env->c_sects = (char*)malloc((nb_sects + 2))))
 		return (err_msg(-1, env->filename, "alloc_sect_table_ppc failed"));
 	return (0);
@@ -65,14 +67,17 @@ int				get_section_table_ppc(t_env *env, struct mach_header *header)
 				&& swap_uint32(((struct segment_command*)env->lc)->nsects) > 0)
 		{
 			seg = ((struct segment_command*)env->lc);
-			sect = (struct section*)((size_t)env->lc + sizeof(*(seg)));
+			if (!(sect = (struct section*)move_ptr(env, env->lc, sizeof(*(seg)))))
+				return (ret_free(-1, env->c_sects));
 			y = 0;
 			while (y < swap_uint32(seg->nsects))
 				env->c_sects[idx++] = get_sectname_letter(sect[y++].sectname);
 		}
-		env->lc = (struct load_command*)((size_t)env->lc + swap_uint32(env->lc->cmdsize));
+		if (!(env->lc = (struct load_command*)move_ptr(env, env->lc, swap_uint32(env->lc->cmdsize))))
+			return (ret_free(-1, env->c_sects));
 		i++;
 	}
-	env->lc = (struct load_command*)((size_t)env->ptr + sizeof(*(header)));
+	if (!(env->lc = (struct load_command*)move_ptr(env, env->ptr, sizeof(*(header)))))
+		return (ret_free(-1, env->c_sects));
 	return (0);
 }
