@@ -6,11 +6,11 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/29 23:02:52 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/29 23:02:59 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/30 00:32:08 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm.h"
+#include "ft_otool.h"
 
 int		ft_isspace(char c)
 {
