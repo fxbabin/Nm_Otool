@@ -1,0 +1,7 @@
+/usr/lib/libATCommandStudio.a
+/usr/lib/libQMIParser.a
+/usr/lib/libl.a
+/usr/lib/libpkstart.a
+/usr/lib/liby.a
+/usr/local/lib/libmlx.a
+/usr/local/lib/libportaudio.a
