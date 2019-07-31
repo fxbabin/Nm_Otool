@@ -6,12 +6,12 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:21:55 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/30 00:01:46 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/31 04:00:51 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_otool.h"
-
+/*
 static void			print_defined(t_env *env, struct nlist **arr,
 						uint32_t i, char c)
 {
@@ -53,7 +53,7 @@ static void			print_32(t_env *env, struct nlist **arr)
 		else
 			print_defined(env, arr, i, c);
 	}
-}
+}*/
 
 static int			check_str(t_env *env, struct nlist **arr, int end)
 {
@@ -70,6 +70,30 @@ static int			check_str(t_env *env, struct nlist **arr, int end)
 	}
 	return (0);
 }
+
+static void			pprint(t_env *env)
+{
+	size_t		offset;
+
+	offset = 0;
+	while (env->text_size >= 16)
+	{
+		print_address(env, env->text_addr + offset, 8);
+		pflush(env, "\t", 1);
+		print_oline(env, (char*)((size_t)env->text_raddr + offset), 16);
+		pflush(env, "\n", 1);
+		offset += 16;
+		env->text_size -= 16;
+	}
+	if (env->text_size > 0)
+	{
+		print_address(env, env->text_addr + offset, 8);
+		pflush(env, "\t", 1);
+		print_oline(env, (char*)((size_t)env->text_raddr + offset), env->text_size);
+		pflush(env, "\n", 1);
+	}
+}
+
 
 static int			display_32(t_env *env)
 {
@@ -94,8 +118,13 @@ static int			display_32(t_env *env)
 	arr[i] = NULL;
 	if ((check_str(env, arr, env->sym->nsyms - 1)) == -1)
 		return (ret_free(-1, arr));
-	ft_quicksort((void**)arr, 0, env->sym->nsyms - 1, env->stringtable);
-	print_32(env, arr);
+	if (env->ffat == 0)
+		ft_printf("%s:\n", env->filename);
+	ft_printf("Contents of (__TEXT,__text) section\n");
+	pprint(env);
+
+	//ft_quicksort((void**)arr, 0, env->sym->nsyms - 1, env->stringtable);
+	//print_32(env, arr);
 	return (ret_free(0, arr));
 }
 

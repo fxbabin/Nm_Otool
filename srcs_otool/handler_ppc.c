@@ -6,12 +6,13 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 19:23:01 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/30 00:02:29 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/31 16:36:52 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_otool.h"
 
+/*
 static void			print_defined(t_env *env, struct nlist **arr,
 		uint32_t i, char c)
 {
@@ -45,7 +46,7 @@ static void			print_ppc(t_env *env, struct nlist **arr)
 		else
 			print_defined(env, arr, i, c);
 	}
-}
+}*/
 
 static int			check_str(t_env *env, struct nlist **arr, int end)
 {
@@ -62,6 +63,34 @@ static int			check_str(t_env *env, struct nlist **arr, int end)
 	}
 	return (0);
 }
+/*
+static void			pprint(t_env *env)
+{
+	size_t		offset;
+
+	offset = 0;
+	ft_printf("--> %d\n", env->text_size);
+	while (((int)env->text_size) >= 16)
+	{
+		ft_printf(".. %d\n", offset);
+		//print_address(env, env->text_addr + offset, 8);
+		//pflush(env, "\t", 1);
+		//print_oline(env, (char*)((size_t)env->text_raddr + offset), 16);
+		//pflush(env, "\n", 1);
+		offset += 16;
+		env->text_size -= 16;
+		ft_printf("--> %d\n", env->text_size);
+	}
+	if (env->text_size > 0)
+	{
+		print_address(env, env->text_addr + offset, 8);
+		pflush(env, "\t", 1);
+		print_oline(env, (char*)((size_t)env->text_raddr + offset), env->text_size);
+		pflush(env, "\n", 1);
+	}
+}*/
+
+#include <stdio.h>
 
 static int			display_ppc(t_env *env)
 {
@@ -84,9 +113,25 @@ static int			display_ppc(t_env *env)
 	arr[i] = NULL;
 	if ((check_str(env, arr, swap_uint32(env->sym->nsyms) - 1)) == -1)
 		return (-1);
-	ft_quicksort_cigam((void**)arr, 0, swap_uint32(env->sym->nsyms) - 1,
-		env->stringtable);
-	print_ppc(env, arr);
+	//ft_quicksort_cigam((void**)arr, 0, swap_uint32(env->sym->nsyms) - 1,
+	//	env->stringtable);
+	//print_ppc(env, arr);
+	/*ft_printf("%p\n", env->start);
+	ft_printf("%p\n", env->text_addr);
+	ft_printf("%p\n", env->text_raddr);
+	ft_printf("%d\n", env->text_size);
+	*/
+	size_t dd;
+
+	dd = 1;
+	printf("%zu\n", dd);
+	printf("r %zu\n", dd);
+	while (dd)
+	{
+		printf("dd\n");
+		//dd -= 16;
+	}
+	//pprint(env);
 	free(arr);
 	return (0);
 }

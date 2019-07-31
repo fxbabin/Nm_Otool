@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 19:33:49 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/30 00:01:33 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/31 04:06:52 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,16 @@ static int		process_sections(t_env *env, uint32_t i, uint32_t y)
 				return (ret_free(-1, env->c_sects));
 			y = 0;
 			while (y < swap_uint32(seg->nsects))
-				env->c_sects[idx++] = get_sectname_letter(sect[y++].sectname);
+			{
+				if (ft_strcmp(sect[y].sectname, SECT_TEXT) == 0)
+				{
+					env->text_size =  swap_uint32(sect[y].size);
+					env->text_addr = swap_uint32(sect[y].addr);
+					env->text_raddr = ((size_t)env->ptr + swap_uint32(sect[y].offset));
+					env->c_sects[idx++] = get_sectname_letter(sect[y].sectname);
+				}
+				y++;
+			}
 		}
 		if (!(env->lc = (struct load_command*)move_ptr(env,
 			env->lc, swap_uint32(env->lc->cmdsize))))

@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/30 00:00:30 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/31 02:38:56 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/31 04:20:07 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,13 @@ int			nm(t_env *env)
 		ret = handle_64(env);
 	else if (magic_number == (int)MH_MAGIC)
 		ret = handle_32(env);
-	/*else if (magic_number == (int)FAT_MAGIC || magic_number == (int)FAT_CIGAM)
+	else if (magic_number == (int)FAT_MAGIC || magic_number == (int)FAT_CIGAM)
 		ret = handle_fat(env);
 	else if (magic_number == (int)MH_CIGAM)
 		ret = handle_ppc(env);
-	else if (ft_strncmp((char*)env->ptr, ARMAG, SARMAG) == 0)
+	else
+		ft_printf("wtf\n");
+	/*else if (ft_strncmp((char*)env->ptr, ARMAG, SARMAG) == 0)
 	{
 		if (env->arch_size == 0)
 			env->arch_size = env->file_size;
@@ -97,6 +99,7 @@ int			main(int argc, char **argv)
 		return (err_msg(EXIT_FAILURE, NULL, "malloc failed on env"));
 	env->buff = malloc(PBUFF_SIZE + 1);
 	env->pos  = 0;
+	env->ffat = 0;
 	ft_memsetp(env->buff, 0, PBUFF_SIZE + 1);
 	
 	//print_address(env, 15);

@@ -6,12 +6,12 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:05:01 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/31 02:36:09 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/31 03:57:12 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_otool.h"
-
+/*
 static void			print_64(t_env *env, struct nlist_64 **arr)
 {
 	uint32_t			i;
@@ -36,7 +36,7 @@ static void			print_64(t_env *env, struct nlist_64 **arr)
 			}
 		}
 	}
-}
+}*/
 
 static int			check_str(t_env *env, struct nlist_64 **arr, int end)
 {
@@ -61,7 +61,7 @@ static void			pprint(t_env *env)
 	offset = 0;
 	while (env->text_size >= 16)
 	{
-		print_address(env, env->text_addr + offset);
+		print_address(env, env->text_addr + offset, 16);
 		pflush(env, "\t", 1);
 		print_oline(env, (char*)((size_t)env->text_raddr + offset), 16);
 		pflush(env, "\n", 1);
@@ -70,7 +70,7 @@ static void			pprint(t_env *env)
 	}
 	if (env->text_size > 0)
 	{
-		print_address(env, env->text_addr + offset);
+		print_address(env, env->text_addr + offset, 16);
 		pflush(env, "\t", 1);
 		print_oline(env, (char*)((size_t)env->text_raddr + offset), env->text_size);
 		pflush(env, "\n", 1);
@@ -100,9 +100,10 @@ static int			display_64(t_env *env)
 	if ((check_str(env, arr, env->sym->nsyms - 1)) == -1)
 		return (ret_free(-1, arr));
 	//ft_printf("%llx", arr[0]->n_value);
-	ft_quicksort((void**)arr, 0, env->sym->nsyms - 1, env->stringtable);
-	print_64(env, arr);
-	ft_printf("%s:\n", env->filename);
+	//ft_quicksort((void**)arr, 0, env->sym->nsyms - 1, env->stringtable);
+	//print_64(env, arr);
+	if (env->ffat == 0)
+		ft_printf("%s:\n", env->filename);
 	ft_printf("Contents of (__TEXT,__text) section\n");
 	pprint(env);
 	//write (1, (char*)((size_t)env->start + env->text_offset), env->text_size);

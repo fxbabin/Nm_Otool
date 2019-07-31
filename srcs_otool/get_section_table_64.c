@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 17:30:54 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/31 02:38:25 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/31 03:14:42 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ static int		process_sections(t_env *env, uint32_t i, uint32_t y)
 				{
 					env->text_size =  sect[y].size;
 					env->text_addr = sect[y].addr;
-					env->text_raddr = ((size_t)env->start + sect[y].offset);
+					env->text_raddr = ((size_t)env->ptr + sect[y].offset);
 					env->c_sects[idx++] = get_sectname_letter(sect[y].sectname);
 				}
 				y++;

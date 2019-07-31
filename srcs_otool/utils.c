@@ -6,7 +6,7 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 17:04:30 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/31 01:48:30 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/31 16:36:07 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int			err_msg(int ret, char *filename, char *msg)
 				LRED, RESET, msg);
 	return (ret);
 }
-
+/*
 void	*ft_memcpyy(void *dst, const void *src, size_t n)
 {
 	char	*tmp;
@@ -80,7 +80,7 @@ char	*ft_strncpy_off(char *dest, int offset, const char *src, size_t n)
 		*(dest++) = '\0';
 	return (tmp);
 }
-
+*/
 
 void		pflush(t_env *env, const char *str, int n)
 {
@@ -101,7 +101,7 @@ void		pflush(t_env *env, const char *str, int n)
 	}
 }
 
-void		print_address(t_env *env, size_t addr)
+void		print_address(t_env *env, size_t addr, int base)
 {
 	char	str[21];
 	char	ret[17];
@@ -114,7 +114,7 @@ void		print_address(t_env *env, size_t addr)
 	while (addr > 0 && (rest = rest + 1))
 		addr /= 16;
 	str[rest] = '\0';
-	while ((rest + i) < 16)
+	while ((rest + i) < base)
 		ret[i++] = '0';
 	ret[i] = '\0';
 	pflush(env, ret, i);
