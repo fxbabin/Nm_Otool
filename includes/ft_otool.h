@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/29 23:59:06 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/29 23:59:21 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/31 02:30:29 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,18 @@
 ** --------------------------------- DEFINES ---------------------------------
 */
 
+# define PBUFF_SIZE 40960
+
 /*
 ** ------------------------------- STRUCTURES ---------------------------------
 */
+
+typedef struct			s_pbuff
+{
+	int					len;
+	int					pos;
+	char				buff[BUFF_SIZE + 1];
+}						t_pbuff;
 
 typedef struct					s_env
 {
@@ -50,6 +59,12 @@ typedef struct					s_env
 	uint32_t					ncmds;
 	char						*stringtable;
 	char						*c_sects;
+	size_t						text_addr;
+	size_t						text_raddr;
+	size_t						text_size;
+	size_t						text_val;
+	char						*buff;
+	int							pos;
 }								t_env;
 
 /*
@@ -90,5 +105,14 @@ void							*ft_memcpy(void *dst, const void *src,
 									size_t n);
 uint32_t						swap_uint32(uint32_t val);
 int								err_msg(int ret, char *filename, char *msg);
+
+void							pflush(t_env *env, const char *str, int n);
+
+
+void							print_address(t_env *env, size_t addr);
+void							print_oline(t_env *env, char *ptr, int size);
+//void							print_buffer(t_env *env,
+//									char *str, int size);
+//void							flush_buffer(t_env *env);
 
 #endif

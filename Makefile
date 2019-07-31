@@ -6,7 +6,7 @@
 #    By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/17 21:49:09 by fbabin            #+#    #+#              #
-#    Updated: 2019/07/30 00:32:26 by fbabin           ###   ########.fr        #
+#    Updated: 2019/07/30 23:57:26 by fbabin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME			=	ft_nm
 NAME2			=	ft_otool
 
 CC				=	gcc
-CFLAGS			=	-Wall -Werror -Wextra #-g3 -fsanitize=address#-Weverything
+CFLAGS			=	-Wall -Werror -Wextra -g3 -fsanitize=address#-Weverything
 
 _NM				=	ft_nm.c utils.c utils2.c ft_atoi.c quicksort.c \
 					handler_64.c get_section_table_64.c \
