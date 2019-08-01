@@ -6,133 +6,43 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 19:23:01 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/31 16:36:52 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/08/01 03:20:28 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_otool.h"
 
-/*
-static void			print_defined(t_env *env, struct nlist **arr,
-		uint32_t i, char c)
-{
-	if ((arr[i]->n_type & N_TYPE) == N_ABS)
-		c = (arr[i]->n_type & N_EXT) ? 'A' : 'a';
-	else if ((arr[i]->n_type & N_TYPE) == N_INDR)
-		c = (arr[i]->n_type & N_EXT) ? 'I' : 'i';
-	else
-	{
-		c = env->c_sects[arr[i]->n_sect - 1];
-		c += (arr[i]->n_type & N_EXT) ? 0 : 32;
-	}
-	ft_printf("%08x %c %s\n", swap_uint32(arr[i]->n_value), c,
-			env->stringtable + swap_uint32(arr[i]->n_un.n_strx));
-}
-
-static void			print_ppc(t_env *env, struct nlist **arr)
-{
-	uint32_t			i;
-	char				c;
-
-	i = -1;
-	c = 'z';
-	while (++i < swap_uint32(env->sym->nsyms))
-	{
-		if ((arr[i]->n_type & N_STAB) != 0)
-			continue ;
-		if ((arr[i]->n_type & N_TYPE) == N_UNDF)
-			ft_printf("%8c %c %s\n", ' ', (arr[i]->n_type & N_EXT) ? 'U' : 'u',
-					env->stringtable + swap_uint32(arr[i]->n_un.n_strx));
-		else
-			print_defined(env, arr, i, c);
-	}
-}*/
-
-static int			check_str(t_env *env, struct nlist **arr, int end)
-{
-	int			i;
-	char		*tmp;
-
-	i = 0;
-	while (i < end)
-	{
-		tmp = (char*)(env->stringtable + swap_uint32(arr[i]->n_un.n_strx));
-		if (ft_strc(env, tmp) == -1)
-			return (-1);
-		i++;
-	}
-	return (0);
-}
-/*
 static void			pprint(t_env *env)
 {
 	size_t		offset;
 
 	offset = 0;
-	ft_printf("--> %d\n", env->text_size);
+	//ft_printf("--> %d\n", env->text_size);
 	while (((int)env->text_size) >= 16)
 	{
-		ft_printf(".. %d\n", offset);
-		//print_address(env, env->text_addr + offset, 8);
-		//pflush(env, "\t", 1);
-		//print_oline(env, (char*)((size_t)env->text_raddr + offset), 16);
-		//pflush(env, "\n", 1);
+		print_address(env, env->text_addr + offset, 8);
+		pflush(env, "\t", 1);
+		print_oline(env, (char*)((size_t)env->text_raddr + offset), 16, 4);
+		pflush(env, "\n", 1);
 		offset += 16;
 		env->text_size -= 16;
-		ft_printf("--> %d\n", env->text_size);
 	}
 	if (env->text_size > 0)
 	{
 		print_address(env, env->text_addr + offset, 8);
 		pflush(env, "\t", 1);
-		print_oline(env, (char*)((size_t)env->text_raddr + offset), env->text_size);
+		print_oline(env, (char*)((size_t)env->text_raddr + offset), env->text_size, 4);
 		pflush(env, "\n", 1);
 	}
-}*/
+	write(1, env->buff, env->pos);
+	env->pos = 0;
+}
 
 #include <stdio.h>
 
 static int			display_ppc(t_env *env)
 {
-	struct nlist	*array;
-	struct nlist	**arr;
-	uint32_t		i;
-
-	if (!(array = (struct nlist*)move_ptr(env, env->ptr,
-		swap_uint32(env->sym->symoff))))
-		return (-1);
-	if (!(arr = (struct nlist**)malloc(
-		(swap_uint32(env->sym->nsyms) + 1) * sizeof(struct nlist*))))
-		return (err_msg(-1, env->filename, "display_ppc failed"));
-	if (!(env->stringtable = (char*)move_ptr(env, env->ptr,
-		swap_uint32(env->sym->stroff))))
-		return (-1);
-	i = -1;
-	while (++i < swap_uint32(env->sym->nsyms))
-		arr[i] = &array[i];
-	arr[i] = NULL;
-	if ((check_str(env, arr, swap_uint32(env->sym->nsyms) - 1)) == -1)
-		return (-1);
-	//ft_quicksort_cigam((void**)arr, 0, swap_uint32(env->sym->nsyms) - 1,
-	//	env->stringtable);
-	//print_ppc(env, arr);
-	/*ft_printf("%p\n", env->start);
-	ft_printf("%p\n", env->text_addr);
-	ft_printf("%p\n", env->text_raddr);
-	ft_printf("%d\n", env->text_size);
-	*/
-	size_t dd;
-
-	dd = 1;
-	printf("%zu\n", dd);
-	printf("r %zu\n", dd);
-	while (dd)
-	{
-		printf("dd\n");
-		//dd -= 16;
-	}
-	//pprint(env);
-	free(arr);
+	pprint(env);
 	return (0);
 }
 

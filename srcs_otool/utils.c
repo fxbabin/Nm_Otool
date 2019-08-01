@@ -6,7 +6,7 @@
 /*   By: fbabin <fbabin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 17:04:30 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/31 16:36:07 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/08/01 03:16:27 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ void		print_address(t_env *env, size_t addr, int base)
 	pflush(env, str, rest);
 }
 
-void		print_oline(t_env *env, char *ptr, int size)
+void		print_oline(t_env *env, char *ptr, int size, int mod)
 {
 	char			str[3];
 	unsigned char	c;
@@ -139,9 +139,8 @@ void		print_oline(t_env *env, char *ptr, int size)
 		}
 		else
 			pflush(env, str, 2);
-		//if ((i % mod) == 1 && i != 0)
-		//(void)mod;
-		pflush(env, " ", 1);
+		if (((i + 1) % mod) == 0)
+			pflush(env, " ", 1);
 		i++;
 	}
 }

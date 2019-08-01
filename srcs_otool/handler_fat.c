@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 18:04:42 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/31 04:19:29 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/08/01 03:25:48 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,12 @@ static int			check_64(t_env *env, struct fat_header *header,
 	}
 	if ((int)i == -2)
 	{
-		ft_printf("de\n");
 		if (!(env->ptr = (void*)move_ptr(env, env->ptr,
 			swap_uint32(fat->offset))))
 			return (-1);
 		nm(env);
 	}
-	env->ffat = 1;
+	//env->ffat = 1;
 	return (0);
 }
 
@@ -47,10 +46,8 @@ int					check_full(t_env *env, struct fat_header *header,
 {
 	if (swap_uint32(fat->cputype) == CPU_TYPE_I386)
 	{
-		//ft_printf("get\n");
-		env->arch_size = swap_uint32(fat->size);
 		if (swap_uint32(header->nfat_arch) > 1)
-			ft_printf("%s (for architecture %s):\n", env->filename,
+			ft_printf("%s (architecture %s):\n", env->filename,
 		(swap_uint32(fat->cpusubtype) == CPU_SUBTYPE_I386_ALL) ? "i386" : "");
 		else
 			ft_printf("%s:\n", env->filename);
@@ -60,10 +57,9 @@ int					check_full(t_env *env, struct fat_header *header,
 	}
 	else if (swap_uint32(fat->cputype) == CPU_TYPE_POWERPC)
 	{
-		ft_printf("here\n");
 		env->arch_size = swap_uint32(fat->size);
 		if (swap_uint32(header->nfat_arch) > 1)
-			ft_printf("%s (for architecture %s):\n", env->filename,
+			ft_printf("%s (architecture %s):\n", env->filename,
 	(swap_uint32(fat->cpusubtype) == CPU_SUBTYPE_POWERPC_ALL) ? "ppc" : "");
 		else
 			ft_printf("%s:\n", env->filename);

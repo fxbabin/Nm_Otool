@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/29 23:59:06 by fbabin            #+#    #+#             */
-/*   Updated: 2019/07/31 16:35:27 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/08/01 03:17:38 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ typedef struct					s_env
 	size_t						text_val;
 	char						*buff;
 	int							pos;
-	char						ffat;
+	char						multi;
+	int							mod;
 }								t_env;
 
 /*
@@ -104,7 +105,7 @@ void							pflush(t_env *env, const char *str, int n);
 
 
 void							print_address(t_env *env, size_t addr, int base);
-void							print_oline(t_env *env, char *ptr, int size);
+void							print_oline(t_env *env, char *ptr, int size, int mod);
 //void							print_buffer(t_env *env,
 //									char *str, int size);
 //void							flush_buffer(t_env *env);
