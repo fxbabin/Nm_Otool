@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 18:04:42 by fbabin            #+#    #+#             */
-/*   Updated: 2019/08/01 04:22:59 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/08/01 03:25:48 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ static int			check_64(t_env *env, struct fat_header *header,
 			return (-1);
 		nm(env);
 	}
+	//env->ffat = 1;
 	return (0);
 }
 

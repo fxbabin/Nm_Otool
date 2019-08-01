@@ -6,13 +6,13 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/29 22:07:00 by fbabin            #+#    #+#             */
-/*   Updated: 2019/08/01 04:21:12 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/30 00:03:13 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_otool.h"
 
-int			ft_strc(t_env *env, char *string)
+int		ft_strc(t_env *env, char *string)
 {
 	int		ret;
 
@@ -27,20 +27,14 @@ int			ft_strc(t_env *env, char *string)
 	return (0);
 }
 
-uint32_t	swap_uint32(uint32_t val)
-{
-	val = ((val << 8) & 0xFF00FF00) | ((val >> 8) & 0xFF00FF);
-	return (val << 16) | (val >> 16);
-}
-
-int			ret_free(int ret, void *ptr)
+int		ret_free(int ret, void *ptr)
 {
 	if (ptr)
 		free(ptr);
 	return (ret);
 }
 
-void		*move_ptr(t_env *env, void *ptr, size_t add)
+void	*move_ptr(t_env *env, void *ptr, size_t add)
 {
 	if (((size_t)ptr + add) >= ((size_t)env->start + env->file_size))
 	{
@@ -51,7 +45,7 @@ void		*move_ptr(t_env *env, void *ptr, size_t add)
 	return ((void*)((size_t)ptr + add));
 }
 
-int			ft_strncmp(const char *s1, const char *s2, size_t n)
+int		ft_strncmp(const char *s1, const char *s2, size_t n)
 {
 	const unsigned char		*tmp1;
 	const unsigned char		*tmp2;

@@ -6,13 +6,13 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:05:01 by fbabin            #+#    #+#             */
-/*   Updated: 2019/08/01 04:47:51 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/08/01 15:57:16 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_otool.h"
 
-static void			pprint(t_env *env)
+static int			pprint(t_env *env)
 {
 	size_t		offset;
 
@@ -21,10 +21,9 @@ static void			pprint(t_env *env)
 	{
 		print_address(env, env->text_addr + offset, 16);
 		pflush(env, "\t", 1);
-		if (!((void*)move_ptr(env, (void*)env->text_raddr, offset)))
-			return ;
-		print_oline(env, (char*)((size_t)env->text_raddr + offset),
-			16, env->mod);
+		if ((print_oline(env, (char*)((size_t)env->text_raddr + offset), 16, env->mod))
+			== -1)
+			return (-1);
 		pflush(env, "\n", 1);
 		offset += 16;
 		env->text_size -= 16;
@@ -33,19 +32,22 @@ static void			pprint(t_env *env)
 	{
 		print_address(env, env->text_addr + offset, 16);
 		pflush(env, "\t", 1);
-		if (!((void*)move_ptr(env, (void*)env->text_raddr, offset)))
-			return ;
-		print_oline(env, (char*)((size_t)env->text_raddr + offset),
-			env->text_size, env->mod);
+		if ((print_oline(env, (char*)((size_t)env->text_raddr + offset), env->text_size, env->mod))
+			== -1)
+			return (-1);
 		pflush(env, "\n", 1);
 	}
+	write(1, env->buff, env->pos);
+	env->pos = 0;
+	return (0);
 }
 
 static int			display_64(t_env *env)
 {
-	pprint(env);
-	write(1, env->buff, env->pos);
-	env->pos = 0;
+	//else if (env->ffat == 2)
+	//	ft_printf("Archive %s:\n", env->filename);
+	if ((pprint(env)) == -1)
+		return (-1);
 	return (0);
 }
 

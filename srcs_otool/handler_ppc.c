@@ -6,22 +6,25 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 19:23:01 by fbabin            #+#    #+#             */
-/*   Updated: 2019/08/01 04:22:16 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/08/01 16:00:33 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_otool.h"
 
-static void			pprint(t_env *env)
+static int			pprint(t_env *env)
 {
 	size_t		offset;
 
 	offset = 0;
+	//ft_printf("--> %d\n", env->text_size);
 	while (((int)env->text_size) >= 16)
 	{
 		print_address(env, env->text_addr + offset, 8);
 		pflush(env, "\t", 1);
-		print_oline(env, (char*)((size_t)env->text_raddr + offset), 16, 4);
+		if ((print_oline(env, (char*)((size_t)env->text_raddr + offset), 16, 4))
+			== -1)
+			return (-1);
 		pflush(env, "\n", 1);
 		offset += 16;
 		env->text_size -= 16;
@@ -30,17 +33,20 @@ static void			pprint(t_env *env)
 	{
 		print_address(env, env->text_addr + offset, 8);
 		pflush(env, "\t", 1);
-		print_oline(env, (char*)((size_t)env->text_raddr + offset),
-			env->text_size, 4);
+		if ((print_oline(env, (char*)((size_t)env->text_raddr + offset), env->text_size, 4))
+			== -1)
+			return (-1);
 		pflush(env, "\n", 1);
 	}
 	write(1, env->buff, env->pos);
 	env->pos = 0;
+	return (0);
 }
 
 static int			display_ppc(t_env *env)
 {
-	pprint(env);
+	if ((pprint(env)) == -1)
+		return (-1);
 	return (0);
 }
 

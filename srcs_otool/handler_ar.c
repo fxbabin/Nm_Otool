@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 22:10:23 by fbabin            #+#    #+#             */
-/*   Updated: 2019/08/01 04:45:15 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/07/31 22:40:40 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,13 @@ int					check_objs(t_env *env, void *curr)
 	start = (void*)((size_t)env->ptr);
 	while ((size_t)tmp < ((size_t)start + env->arch_size))
 	{
+		//ft_printf("%d\n", env->text_size);
 		if (!((char*)move_ptr(env, tmp, sizeof(*tmp))))
 			return (-1);
 		ft_printf("%s(%s):\n", env->filename,
 			(char*)((size_t)tmp + sizeof(*tmp)));
+		//if (env->text_size == 0)
+		//	ft_printf("Contents of (__TEXT,__text) section\n");
 		if (!(env->ptr = (void*)move_ptr(env, tmp,
 			sizeof(*tmp) + ft_atoi((char*)((size_t)tmp + 3)))))
 			return (-1);
