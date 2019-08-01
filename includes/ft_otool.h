@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/29 23:59:06 by fbabin            #+#    #+#             */
-/*   Updated: 2019/08/01 03:17:38 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/08/01 04:29:45 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,11 +103,10 @@ int								err_msg(int ret, char *filename, char *msg);
 
 void							pflush(t_env *env, const char *str, int n);
 
-
-void							print_address(t_env *env, size_t addr, int base);
-void							print_oline(t_env *env, char *ptr, int size, int mod);
-//void							print_buffer(t_env *env,
-//									char *str, int size);
-//void							flush_buffer(t_env *env);
+int								print_filename(t_env *env);
+void							print_address(t_env *env,
+									size_t addr, int base);
+void							print_oline(t_env *env,
+									char *ptr, int size, int mod);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:21:55 by fbabin            #+#    #+#             */
-/*   Updated: 2019/08/01 03:19:05 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/08/01 04:46:52 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@ static void			pprint(t_env *env)
 	{
 		print_address(env, env->text_addr + offset, 8);
 		pflush(env, "\t", 1);
-		print_oline(env, (char*)((size_t)env->text_raddr + offset), 16, env->mod);
+		if (!((void*)move_ptr(env, (void*)env->text_raddr, offset)))
+			return ;
+		print_oline(env, (char*)((size_t)env->text_raddr + offset),
+			16, env->mod);
 		pflush(env, "\n", 1);
 		offset += 16;
 		env->text_size -= 16;
@@ -30,18 +33,20 @@ static void			pprint(t_env *env)
 	{
 		print_address(env, env->text_addr + offset, 8);
 		pflush(env, "\t", 1);
-		print_oline(env, (char*)((size_t)env->text_raddr + offset), env->text_size, env->mod);
+		if (!((void*)move_ptr(env, (void*)env->text_raddr, offset)))
+			return ;
+		print_oline(env, (char*)((size_t)env->text_raddr + offset),
+			env->text_size, env->mod);
 		pflush(env, "\n", 1);
 	}
-	write(1, env->buff, env->pos);
-	env->pos = 0;
 }
-
 
 static int			display_32(t_env *env)
 {
 	ft_printf("Contents of (__TEXT,__text) section\n");
 	pprint(env);
+	write(1, env->buff, env->pos);
+	env->pos = 0;
 	return (0);
 }
 
