@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:05:01 by fbabin            #+#    #+#             */
-/*   Updated: 2019/08/01 15:57:16 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/08/01 16:40:39 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ static int			pprint(t_env *env)
 	{
 		print_address(env, env->text_addr + offset, 16);
 		pflush(env, "\t", 1);
-		if ((print_oline(env, (char*)((size_t)env->text_raddr + offset), 16, env->mod))
-			== -1)
+		if ((print_oline(env, (char*)((size_t)env->text_raddr + offset),
+			16, env->mod)) == -1)
 			return (-1);
 		pflush(env, "\n", 1);
 		offset += 16;
@@ -32,22 +32,20 @@ static int			pprint(t_env *env)
 	{
 		print_address(env, env->text_addr + offset, 16);
 		pflush(env, "\t", 1);
-		if ((print_oline(env, (char*)((size_t)env->text_raddr + offset), env->text_size, env->mod))
-			== -1)
+		if ((print_oline(env, (char*)((size_t)env->text_raddr + offset),
+			env->text_size, env->mod)) == -1)
 			return (-1);
 		pflush(env, "\n", 1);
 	}
-	write(1, env->buff, env->pos);
-	env->pos = 0;
 	return (0);
 }
 
 static int			display_64(t_env *env)
 {
-	//else if (env->ffat == 2)
-	//	ft_printf("Archive %s:\n", env->filename);
 	if ((pprint(env)) == -1)
 		return (-1);
+	write(1, env->buff, env->pos);
+	env->pos = 0;
 	return (0);
 }
 

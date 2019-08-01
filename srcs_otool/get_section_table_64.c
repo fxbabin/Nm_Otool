@@ -6,7 +6,7 @@
 /*   By: fbabin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 17:30:54 by fbabin            #+#    #+#             */
-/*   Updated: 2019/08/01 15:42:38 by fbabin           ###   ########.fr       */
+/*   Updated: 2019/08/01 16:31:46 by fbabin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int		alloc_sect_table_64(t_env *env, struct mach_header_64 *header)
 	return (0);
 }
 
-static int				get_info(t_env *env, struct segment_command_64 *seg,
+static int		get_info(t_env *env, struct segment_command_64 *seg,
 				struct section_64 *sect)
 {
 	uint32_t	y;
